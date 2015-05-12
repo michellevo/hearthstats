@@ -93,8 +93,7 @@ class ConstructedsController < ApplicationController
     respond_to do |format|
       if @constructed.save
         MatchDeck.create( deck_id: deck.id, match_id: @constructed.id )
-        delete_deck_cache!(deck)
-        format.js
+        delete_deck_cache!(deck) 
       else
       end
     end
@@ -107,8 +106,8 @@ class ConstructedsController < ApplicationController
       return
     end
 
-    deck = Deck.find(params[:deck_id])
-    unless deck
+    @deck = Deck.find(params[:deck_id])
+    unless @deck
       redirect_to new_constructed_path, alert: 'Unknown deck'
       return
     end
@@ -128,7 +127,7 @@ class ConstructedsController < ApplicationController
     @constructed.mode_id = mode_id
     @constructed.coin = params[:other][:gofirst].to_i.zero?
 
-    @constructed.klass_id = deck.klass_id
+    @constructed.klass_id = @deck.klass_id
     @constructed.user_id = current_user.id
     if params[:win].present?
       @constructed.result_id = 1
@@ -139,17 +138,19 @@ class ConstructedsController < ApplicationController
     end
     respond_to do |format|
       if @constructed.save
-        MatchDeck.create(deck_id: deck.id, 
+        MatchDeck.create(deck_id: @deck.id, 
                          match_id: @constructed.id,
-                         deck_version_id: deck.current_version
+                         deck_version_id: @deck.current_version
                         )
-        delete_deck_cache!(deck)
-        format.html { redirect_to constructeds_path, notice: 'Constructed was successfully created.' }
+        delete_deck_cache!(@deck) 
+        format.html { redirect_to constructeds_path }
         format.json { render json: @constructed, status: :created, location: @constructed }
+        format.js
       else
         @my_decks = get_my_decks
         format.html { render action: "new" }
         format.json { render json: @constructed.errors, status: :unprocessable_entity }
+        format.js
       end
     end
   end
