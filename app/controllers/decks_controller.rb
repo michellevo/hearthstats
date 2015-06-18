@@ -234,7 +234,7 @@ class DecksController < ApplicationController
     gon.cards = Card.where(collectible: true, klass_id: [nil, params[:klass]], type_name: Card::TYPES.values)
     @deck = Deck.new
     @klass = params[:klass]
-    @archtypes = UniqueDeckType.where(verified: true)
+    @archtypes = UniqueDeckType.where(verified: true, klass_id: params[:klass])
     @deck.klass_id = params[:klass]
     @deck.is_public = true
     respond_to do |format|

@@ -179,7 +179,19 @@ var CardSelect = React.createClass({
 		var search = filterParams[0]; 
 		var mana = filterParams[1];
 		var klass = filterParams[2];
-		console.log(filterParams);
+		if(filterParams==["", -1, -1]){
+			return(
+				this.setState({
+					cards: this.props.cards.sort(function(cardA, cardB){ 
+			if(cardA.mana != cardB.mana){ return cardA.mana - cardB.mana; }
+			else{ 
+				if(cardA.name < cardB.name){ return -1; }
+				if(cardB.name < cardA.name){ return 1; }
+				else{ return 0; }
+			}
+		})
+				}).bind(this));
+		}
 		newCards = cards.filter(function(card){
 			return(
 				// check if card name/description/rarity matches search
@@ -245,7 +257,6 @@ var CardSelect = React.createClass({
 	},
 	_addCard:function(card){
 		return function(event){
-			console.log(card);
 			// if there are already 30 cards
 			if(this.state.cardQuant == 30){ 
 				toastr.error("There are already 30 cards in the deck!");
