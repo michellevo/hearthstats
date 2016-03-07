@@ -10,16 +10,20 @@ var CardSelect = React.createClass({
 			deckArray: [],
 			selectedMana: -1,
 			selectedCardType: -1,
-			// filterParams: array
-			// [0]: Search
-			// [1]: Mana
+			// filterParams: object
+			// search: search string
+			// mana: mana (-1-10)
 			// 		-1: All
-			//		10: 10+ 
-			// [2]: Class/Neutral/All
+			//		10: 10+
+			// classFilter: Class/Neutral/All
 			//		-1: All
 			//		 0: Class
 			//		 1: Neutral
-			filterParams: ["", -1, -1],
+			filterParams: {
+				search: "",
+				mana: -1,
+				classFilter: -1
+			},
 			textImport: false
 		}
 	},
@@ -231,8 +235,8 @@ var CardSelect = React.createClass({
 	},
 	filterMana: function(btn){
 		var mana = parseInt(btn.target.value); 
-		var newFilterParams = this.state.filterParams.slice();
-		newFilterParams[1] = mana;
+		var newFilterParams = this.state.filterParams;
+		newFilterParams.mana = mana;
 		this.setState({
 			selectedMana: mana,
 			filterParams: newFilterParams,
@@ -241,8 +245,8 @@ var CardSelect = React.createClass({
 	},
 	filterKlass: function(btn){
 		var klassID = parseInt(btn.target.value);
-		var newFilterParams = this.state.filterParams.slice();
-		newFilterParams[2] = klassID;
+		var newFilterParams = this.state.filterParams;
+		newFilterParams.classFilter = klassID;
 		this.setState({
 			selectedCardType: klassID,
 			filterParams: newFilterParams,
@@ -251,8 +255,8 @@ var CardSelect = React.createClass({
 	},
 	filterSearch: function(event){
 		var search = event.target.value.toLowerCase();
-		var newFilterParams = this.state.filterParams.slice();
-		newFilterParams[0] = search;
+		var newFilterParams = this.state.filterParams;
+		newFilterParams.search = search;
 		var cards = this.filterCards(this.props.cards, newFilterParams);
 		this.setState({
 			filterParams: newFilterParams,
@@ -262,10 +266,10 @@ var CardSelect = React.createClass({
 	filterCards: function(cards, filterParams){
 		this.updateButtons();
 		var rarityArray= ["Basic Free", "Common", "Rare", "Epic", "Legendary" ];
-		var search = filterParams[0]; 
-		var mana = filterParams[1];
-		var klass = filterParams[2];
-		if(filterParams[0] == "" && filterParams[1] == -1 && filterParams[2] == -1){
+		var search = filterParams.search;
+		var mana = filterParams.mana;
+		var klass = filterParams.classFilter;
+		if(search == "" && mana == -1 && klass == -1){
 			return this.sortCards(this.props.cards);
 		}
 		newCards = cards.filter(function(card){
