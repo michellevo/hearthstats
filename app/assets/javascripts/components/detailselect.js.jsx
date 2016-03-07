@@ -1,6 +1,6 @@
 var DetailSelect = React.createClass({
-	getInitialState: function(){
-		return{
+	getInitialState: function() {
+		return {
 			klass: this.props.klass,
 			archtypes: this.props.archtype,
 			archtypeNotHere: false,
@@ -10,15 +10,18 @@ var DetailSelect = React.createClass({
 			version: ""
 		};
 	},
-	componentWillMount: function(){
+
+	componentWillMount: function() {
 		this.buildDeckArray();
-		if(this.props.type == "edit"){ 
+
+		if (this.props.type == "edit") {
 			this.setState({
 				klass: this.props.deck.klass_id
-			})
+			});
 		}
 	},
-	componentDidMount: function(){
+
+	componentDidMount: function() {
 		$('.deckNotes').ckeditor({
 			ui: '#fff',
 			toolbar :
@@ -31,19 +34,26 @@ var DetailSelect = React.createClass({
 				],
 			width: '94%',
 			height: '100px',
-			marginLeft: '15px'});
+			marginLeft: '15px'
+		});
 	},
-	render: function(){
-		if(this.props.type=="edit"){ 
-			var action = "Update Deck"
-		} 
-		else if(this.props.type=="new"){
-			var action= "Create Deck"
-		}
+
+	render: function() {
+		var action;
 		var publicButtons = [];
-		if(this.state.cardQuant == 30){ 
-			publicButtons.push(<div><input type="checkbox" id="publicCheck" className="marg" name="deck[is_public]">Make this deck private</input>
-								</div>)
+
+		if (this.props.type=="edit") {
+			action = "Update Deck";
+		}
+		else if (this.props.type=="new") {
+			action = "Create Deck";
+		}
+		if (this.state.cardQuant == 30) {
+			publicButtons.push(
+				<div>
+					<input type="checkbox" id="publicCheck" className="marg" name="deck[is_public]">Make this deck private</input>
+				</div>
+			);
 		}
 		return(
 			<div>
@@ -65,7 +75,7 @@ var DetailSelect = React.createClass({
 						</div>
 						<div className="col-md-4">
 							<div className="deckbuilderWrapperWrapper">
-							 		<div className="deckbuilderWrapper deckbuilderCardsWrapper deckDetailCardShow"> 
+							 		<div className="deckbuilderWrapper deckbuilderCardsWrapper deckDetailCardShow">
 							 			{this._drawCards()}
 							 		</div>
 							 	</div>
@@ -73,28 +83,28 @@ var DetailSelect = React.createClass({
 					</div>
 				</div>
 			</div>
-
 		);
 	},
-	deckDetailLoad: function(){
-		if(this.props.type == "edit"){
-			try{
+
+	deckDetailLoad: function() {
+		if (this.props.type == "edit") {
+			try {
 				var deck_notes = JSON.parse(this.props.deck.notes);
 				var general = deck_notes.general;
 				var mulligan = deck_notes.mulligan;
 				var strategy = deck_notes.strategy;
 				var matchups = deck_notes.matchups;
-			} catch(e){
+			} catch(e) {
 				var deck_notes = this.props.deck.notes;
 				var general = this.props.deck.notes;
 				var mulligan = undefined;
 				var strategy = undefined;
 				var matchups = undefined;
 			}
-			return(
+			return (
 				<div>
 					<div className="row">
-						<div className="col-md-6 col-xs-6">
+						<div className="col-xs-6">
 							<div><h3 className="left">Name:</h3></div>
 							<input type="text" id="deckName" ref="deckname" name="deck[name]" defaultValue={this.props.deck.name} size="30"/>
 						</div>
@@ -109,15 +119,15 @@ var DetailSelect = React.createClass({
 						<h4 className="notes">Strategy</h4>
 						<textarea className="deckNotes" name="notes[strategy]" defaultValue={strategy}></textarea>
 						<h4 className="notes">Matchups</h4>
-						<textarea className="deckNotes" name="notes[matchups]" defaultValue={matchups}></textarea>						
+						<textarea className="deckNotes" name="notes[matchups]" defaultValue={matchups}></textarea>
 					</div>
 				</div>
 			);
-		} else{
-			return(
+		} else {
+			return (
 				<div>
 					<div className="row">
-						<div className="col-md-6 col-xs-6">
+						<div className="col-xs-6">
 							<div><h3 className="left">Name:</h3></div>
 							<input type="text" id="deckName" ref="deckname" name="deck[name]" placeholder="Your deck name..." size="30"/>
 						</div>
@@ -133,16 +143,17 @@ var DetailSelect = React.createClass({
 						<h4 className="notes">Strategy</h4>
 						<textarea className="deckNotes" name="notes[strategy]"></textarea>
 						<h4 className="notes">Matchups</h4>
-						<textarea className="deckNotes" name="notes[matchups]"></textarea>						
+						<textarea className="deckNotes" name="notes[matchups]"></textarea>
 					</div>
 				</div>
 			);
 		}
 	},
-	versionControl: function(){
-		if(this.props.type == "edit"){
+
+	versionControl: function() {
+		if (this.props.type == "edit") {
 			var current_version = parseFloat(this.props.currentVersion.version);
-			return(
+			return (
 				<div>
 					<input className="btn vButton yellow" onClick={this.setVersion("minor_version")} name="minor_version" value={"Save as v" + (current_version+0.1).toFixed(1)} type="submit" />
 					<input className="btn vButton green" onClick={this.setVersion("major_version")} name="major_version" value={"Save as v"+ (Math.floor(current_version)+1.0)+".0" } type="submit"/>
@@ -150,24 +161,27 @@ var DetailSelect = React.createClass({
 			)
 		}
 	},
-	setVersion: function(version_type){
-		return function(event){
+
+	setVersion: function(version_type) {
+		return function(event) {
 			this.setState({
 				version: version_type
 			});
 		}.bind(this);
 	},
-	displayArchtypes: function(){
-		if(!this.state.archtypeNotHere){
-			var archtypes = this.props.archtype.map(function(archtype){
-				if(archtype.klass_id == this.props.klass){
-					return(
+
+	displayArchtypes: function() {
+		if (!this.state.archtypeNotHere) {
+			var archtypes = this.props.archtype.map(function(archtype) {
+				if (archtype.klass_id == this.props.klass) {
+					return (
 						<option value={archtype.id} name="unique_deck_type_id">{archtype.name}</option>
 					);
 				}
 			}.bind(this));
-			return(
-				<div className="col-md-6 col-xs-6">
+
+			return (
+				<div className="col-xs-6">
 					<div><h3 className="left">Archetype:</h3></div>
 					<select ref="archtypes" name="unique_deck_type_id">
 						<option value="" name="unique_deck_type_id"> </option>
@@ -177,8 +191,8 @@ var DetailSelect = React.createClass({
 				</div>
 			);
 		}
-		else{
-			return(
+		else {
+			return (
 				<div>
 					<div><h3 className="left">Archtype:</h3></div>
 					<input type="text" ref="archtypes" name="new_archtype" size="30" placeholder="Your deck's archtype...">Archtype</input>
@@ -186,14 +200,17 @@ var DetailSelect = React.createClass({
 			);
 		}
 	},
-	setNoArchtype: function(){
+
+	setNoArchtype: function() {
 		this.setState({
 			archtypeNotHere: true
 		});
 	},
-	handleSubmit: function(event){
+
+	handleSubmit: function(event) {
 		var formData = $(this.refs.form.getDOMNode()).serialize();
-		if(this.props.type=="new"){
+
+		if (this.props.type=="new") {
 			event.preventDefault();
 			$.ajax({
 	      data: formData,
@@ -203,10 +220,10 @@ var DetailSelect = React.createClass({
 	      success: function ( data ) {
 	      	window.location.href = data.slug
 	      }
-	    })
-		} else{
+	    });
+		} else {
 			event.preventDefault();
-			if(this.state.version != ""){ 
+			if (this.state.version != "") {
 				formData += "&";
 				formData += this.state.version;
 				formData += "= "
@@ -219,54 +236,59 @@ var DetailSelect = React.createClass({
 	      success: function ( data ) {
 	      	window.location.href = '../' + data.slug
 	      }
-	    })			
+	    });
 		}
 	},
-	buildDeckArray: function(){
-		if(this.props.cardstring.length == 0) return; 
-		deckCards = this.props.cardstring.split(","); 
+
+	buildDeckArray: function() {
+		if (this.props.cardstring.length == 0) return;
+		var deckCards = this.props.cardstring.split(",");
 		var newDecklistArray = [];
 		var newDeckArray = [];
 		var newQuant = 0;
-		function findCard(id, cards){
-			for(var i=0; i<cards.length; ++i){
-				if(cards[i].id == id){
+
+		function findCard(id, cards) {
+			for(var i=0; i < cards.length; ++i) {
+				if (cards[i].id == id) {
 					return cards[i];
 				}
 			}
 		}
-		deckCards.forEach(function(card){
+
+		deckCards.forEach(function(card) {
 			id = parseInt(card.split("_")[0]);
 			quantity = parseInt(card.split("_")[1]);
 			newDecklistArray[id] = quantity;
 			newDeckArray.push(findCard(id, this.props.cards));
 			newQuant = newQuant + quantity;
 		}.bind(this));
-		newDeckArray.sort(function(cardA, cardB){ 
-			if(cardA.mana != cardB.mana){ return cardA.mana - cardB.mana; }
-			else{ 
-				if(cardA.name < cardB.name){ return -1; }
-				if(cardB.name < cardA.name){ return 1; }
-			else{ return 0; }
+
+		newDeckArray.sort(function(cardA, cardB) {
+			if (cardA.mana != cardB.mana) return cardA.mana - cardB.mana;
+			else{
+				if (cardA.name < cardB.name) return -1;
+				if (cardB.name < cardA.name) return 1;
+				else return 0;
 			}
 		});
+
 		this.setState({
 			deckArray: newDeckArray,
 			decklist: newDecklistArray,
 			cardQuant: newQuant
 		});
 	},
-	_drawCards:function(){
+	_drawCards:function() {
 		var _cs = this.props.cardstring;
-		if(_cs.length === 0) { return; }
-		return(this.state.deckArray.map(function(card){
-			if(card == undefined){ return; }
-			printCard = false;
-			if(this.state.decklist[card.id]!=undefined){ 
+		if (_cs.length === 0) { return; }
+		return(this.state.deckArray.map( function(card) {
+			if (!card) return;
+			var printCard = false;
+			if (this.state.decklist[card.id]!=undefined) {
 				quant = this.state.decklist[card.id];
 				printCard = true;
 			}
-			if(printCard == true){ return(<DeckCard card={card} qty={quant} type="show"/>); }
+			if (printCard) { return(<DeckCard card={card} qty={quant} type="show"/>); }
 		}.bind(this)));
 	}
 });

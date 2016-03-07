@@ -1,6 +1,6 @@
 var DeckBuild = React.createClass({
 	// props: all_cards, cards, klasses, archtypes, deck
-	getInitialState: function(){
+	getInitialState: function() {
 		return{
 			cardstring: "",
 			chosenKlass: this.props.klass,
@@ -10,51 +10,64 @@ var DeckBuild = React.createClass({
 			editBack: false
 		};
 	},
-	componentWillMount: function(){
-		if(this.props.type == "edit"){
+
+	componentWillMount: function() {
+		if (this.props.type == "edit") {
 			this.setState({
 				chosenKlass: this.props.deck.klass_id,
 				cardstring: this.props.deck.cardstring
 			});
 		}
 	},
-  render: function(){
-  	// if class is already selected, move onto choosing cards 
+
+  render: function() {
+  	// if class is already selected, move onto choosing cards
   	// 		ie: already chosen class or deck is already created and just editing
-  	if(this.state.klassSelected && !this.state.moveOn){ 
+  	if (this.state.klassSelected && !this.state.moveOn) {
   		return(
 				<div>
-					<CardSelect editBack={this.state.editBack} cardstring={this.state.cardstring} klass={this.state.chosenKlass} cards={this.props.cards} submitClick={this.handleCardsSelect} deck={this.props.deck} type={this.props.type} />
+					<CardSelect
+						editBack={this.state.editBack}
+						cardstring={this.state.cardstring}
+						klass={this.state.chosenKlass}
+						cards={this.props.cards}
+						submitClick={this.handleCardsSelect}
+						deck={this.props.deck}
+						type={this.props.type} />
 				</div>
   		);
-  	} else{ 
+  	} else{
 			return(
-				<DetailSelect 
-					type = {this.props.type} 
-					currentVersion = {this.props.currentVersion} 
-					deck = {this.props.deck} 
-					klass = {this.state.chosenKlass} 
-					backButton = {this.handleCardResubmit} 
-					cards = {this.props.cards} 
-					archtype = {this.props.archtypes} 
-					cardstring = {this.state.cardstring}/> );
+				<DetailSelect
+					type = {this.props.type}
+					currentVersion = {this.props.currentVersion}
+					deck = {this.props.deck}
+					klass = {this.state.chosenKlass}
+					backButton = {this.handleCardResubmit}
+					cards = {this.props.cards}
+					archtype = {this.props.archtypes}
+					cardstring = {this.state.cardstring}/>
+			);
 		}
 	},
-	handleKlassSelect: function(klass_id){
-		return function(event){
+
+	handleKlassSelect: function(klass_id) {
+		return function(event) {
 			this.setState({
 				chosenKlass: klass_id,
 				klassSelected: true
 			})
 		}.bind(this);
 	},
-	handleCardsSelect: function(cardstringText){
+
+	handleCardsSelect: function(cardstringText) {
 		this.setState({
       cardstring: cardstringText,
       moveOn: true
-    })
+    });
 	},
-	handleCardResubmit: function(){
+
+	handleCardResubmit: function() {
 		this.setState({
 			moveOn: false,
 			editBack: true
